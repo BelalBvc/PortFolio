@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bilal Nazih</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #2a2a2a;
+      --accent-color: #00ff88;
+      --text-color: #e0e0e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    * {
+  scrollbar-width: none;
+}
+
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+
+    body {
+      background: var(--primary-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+    body::-webkit-scrollbar {
+  display: none; 
+}
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .NavBarcontainer{
+        max-width: 1200px;
+        margin: 0 auto;
+      margin-right: 5%;
+
+      padding: 1rem;
+    }
+
+    
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(42, 42, 42, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 1.5rem 0;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2rem;
+      list-style: none;
+      font-size: large;
+      right: 0%;
+    }
+
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+  
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, var(--accent-color), #00ccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p{
+        font-size: 2rem;
+    }
+
+    
+    section {
+      padding: 5rem 0;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: 1s;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+  
+    .slider-container {
+      width: 100%;
+      padding: 20px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slider-track {
+      display: flex;
+      gap: 5vh;
+      padding: 0 60px;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .card {
+      min-width: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform-style: preserve-3d;
+      transition: all 0.5s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(0, 255, 136, 0.1);
+    }
+
+    .card:hover::before {
+      left: 100%;
+    }
+
+    .card-title {
+      color: var(--accent-color);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .card-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--accent-color);
+    }
+
+    .card-description {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .card-button {
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 10px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card-button:hover {
+      background: var(--accent-color);
+      color: var(--primary-color);
+    }
+
+   
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px 0 10px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      left: -20%;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-color);
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .slider-track {
+        padding: 0 30px;
+      }
+      .card {
+        min-width: 250px;
+      }
+    }
+
+  
+    .contact-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .contact-links a {
+      font-size: 2rem;
+      color: var(--text-color);
+      transition: 0.3s;
+    }
+
+    .contact-links a:hover {
+      color: var(--accent-color);
+      transform: scale(1.2);
+    }
+    .about-content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap; 
+  margin-top: 2rem;
+}
+#about{
+  margin-top: 5%;
+}
+
+.about-image {
+  position: relative; 
+  overflow: hidden; 
+  border-radius: 50%; 
+  width: 35%; 
+  margin-left: 0%; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.about-image img {
+  width: 100%; 
+  height: auto;
+  border-radius: 50%; 
+  display: block; 
+}
+#projects{
+  margin-top: 2.5%;
+}
+
+.about-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: 0.5s;
+  z-index: 1; 
+}
+
+.about-image:hover::before {
+  left: 100%; 
+}
+
+.about-image:hover {
+  transform: translateY(-10px) scale(1.02); 
+  box-shadow: 0 15px 30px rgba(0, 255, 136, 0.1); 
+}
+
+
+
+.about-text {
+  flex: 1;
+}
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="NavBarcontainer">
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#projects">Competenze</a></li>
+        <li><a href="#about">Chi Sono</a></li>
+        <li><a href="#contact">Contatti</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <section id="home" class="hero">
+    <div class="container">
+        <div id="particles-js" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
+      <h1>Ciao, Sono Bilal Nazih</h1>
+      <p>Full Stack Developer</p>
+    </div>
+  </section>
+
+  <section id="about" class="container">
+    <h2>Chi Sono</h2>
+    <div class="about-content">
+      <div class="about-image">
+        <img src="89219168-f393-4049-879d-ee46690c68ef.jpg" id="IMGprinc" alt="Bilal Nazih">
+      </div>
+      <div class="about-text">
+        <p>
+            Ciao, sono Bilal, ho 21 anni e vengo da Verona. La programmazione è la mia passione, con esperienza in linguaggi come Python, JavaScript e CSS, e frameworks come React e Node.js. Mi piace sviluppare siti web, risolvere problemi complessi e applicare le mie conoscenze per creare soluzioni pratiche. Sono sempre alla ricerca di nuovi stimoli e opportunità per imparare, crescere e collaborare con chi condivide la mia passione per la tecnologia. Se vuoi parlare di progetti o scambiare idee, sono qui!
+
+
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="projects" class="container">
+    <h2>Linguaggi di Competenza</h2>
+    <div class="slider-container">
+      <div class="slider-track">
+        
+        <div class="card">
+          <h3 class="card-title">JavaScript</h3>
+          <p class="card-description">
+            Ho una solida esperienza con JavaScript, usandolo per creare soluzioni web interattive e dinamiche.
+          </p>
+         
+        </div>
+       
+        <div class="card">
+          <h3 class="card-title">HTML</h3>
+          <p class="card-description">
+            Conosco bene HTML per strutturare pagine web in modo semantico e accessibile.
+          </p>
+        </div>
+       
+        <div class="card">
+          <h3 class="card-title">CSS</h3>
+          <p class="card-description">
+            Ho esperienza nell'uso di CSS per creare design moderni, puliti e responsive.
+          </p>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">Python</h3>
+          <p class="card-description">
+            Ho una buona conoscenza di Python, esplorando anche ambiti di machine e deep learning.
+          </p>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">PHP</h3>
+          <p class="card-description">
+            Ho una conoscenza di base di PHP, usato per creare script semplici e gestire logiche server-side.
+          </p>
+        </div>
+        
+        <div class="card">
+          <h3 class="card-title">MySQL</h3>
+          <p class="card-description">
+            Gestisco database MySQL e progetto diagrammi entità-relazioni per strutturare i dati.
+          </p>
+        </div>
+      </div>
+      <div class="slider-nav">
+        <button class="nav-btn prev-btn">←</button>
+        <button class="nav-btn next-btn">→</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="container">
+    <h2>Contattami</h2>
+    <div class="contact-links">
+      <a href="mailto:bilal.nazih.vr@email.com"><i class="fas fa-envelope"></i></a>
+      <a href="https://www.linkedin.com/in/bilal-nazih-658253234/?trk=public_profile_browsemap&originalSubdomain=it" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/BelalBvc" target="_blank"><i class="fab fa-github"></i></a>
+    </div>
+  </section>
+
+  <script>
+   
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('section').forEach((section) => {
+      observer.observe(section);
+    });
+
+    
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth',
+        });
+      });
+    });
+
+    
+    const track = document.querySelector('.slider-track');
+    const cards = document.querySelectorAll('.card');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    let currentPosition = 0;
+    const cardWidth = cards[0].offsetWidth + 30; 
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPosition > -(cardWidth * (cards.length - 3))) {
+        currentPosition -= cardWidth;
+        track.style.transform = `translateX(${currentPosition}px)`;
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPosition < 0) {
+        currentPosition += cardWidth;
+        track.style.transform = `translateX(${currentPosition}px)`;
+      }
+    });
+  </script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 290,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "triangle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 10
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 10,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": true,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "window",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 140,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 100,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 100,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    });
+    </script>
+</body>
+</html>
