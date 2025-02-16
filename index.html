@@ -134,6 +134,15 @@
     margin-top: 2%;
     height: auto;
   }
+  @media (max-width: 768px) {
+  .slider-container {
+    padding: 0 15px;
+  }
+  .slider-track {
+    gap: 3vh;
+    padding: 0 15px;
+  }
+}
 
   .about-image:hover {
     position: relative;
@@ -166,7 +175,7 @@
 
     .slider-track {
       display: flex;
-      gap: 5vh;
+      gap: 2vh;
       padding: 0 60px;
       transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     }
@@ -185,6 +194,9 @@
       overflow: hidden;
     }
 
+    #about > h2{
+      text-align: center;
+    }
     .card::before {
       content: '';
       position: absolute;
@@ -200,7 +212,9 @@
       );
       transition: 0.5s;
     }
-
+   #projects >h2{
+    text-align: center;
+   }
     .card:hover {
       transform: translateY(-10px) scale(1.02);
       box-shadow: 0 15px 30px rgba(0, 255, 136, 0.1);
@@ -268,7 +282,7 @@
       color: var(--text-color);
       cursor: pointer;
       transition: all 0.3s ease;
-      left: -20%;
+      left: 0%;
     }
 
     .nav-btn:hover {
@@ -288,7 +302,10 @@
       }
     }
 
-  
+  #contact>h2{
+    text-align: center;
+
+  }
     .contact-links {
       display: flex;
       gap: 2rem;
@@ -497,27 +514,55 @@
       });
     });
 
-    
     const track = document.querySelector('.slider-track');
-    const cards = document.querySelectorAll('.card');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    let currentPosition = 0;
-    const cardWidth = cards[0].offsetWidth + 30; 
+  const cards = document.querySelectorAll('.card');
+  const prevBtn = document.querySelector('.prev-btn');
+  const nextBtn = document.querySelector('.next-btn');
+  const sliderContainer = document.querySelector('.slider-container');
 
-    nextBtn.addEventListener('click', () => {
-      if (currentPosition > -(cardWidth * (cards.length - 3))) {
-        currentPosition -= cardWidth;
-        track.style.transform = `translateX(${currentPosition}px)`;
-      }
-    });
+  let currentPosition = 0;
+  let gap = window.innerHeight * 0.05;
+  let cardWidth = cards[0].offsetWidth + gap;
+  const totalCards = cards.length;
+  let maxTranslate = -(totalCards * cardWidth - sliderContainer.offsetWidth);
 
-    prevBtn.addEventListener('click', () => {
-      if (currentPosition < 0) {
-        currentPosition += cardWidth;
-        track.style.transform = `translateX(${currentPosition}px)`;
-      }
-    });
+  window.addEventListener('resize', () => {
+    gap = window.innerHeight * 0.05;
+    cardWidth = cards[0].offsetWidth + gap;
+    
+    // Ricalcola la posizione massima basata sul numero totale di card
+    maxTranslate = -(totalCards * cardWidth - sliderContainer.offsetWidth);
+    
+    // Corregge la posizione se necessaria
+    if (currentPosition < maxTranslate) {
+      currentPosition = maxTranslate;
+      track.style.transform = `translateX(${currentPosition}px)`;
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    let newPosition = currentPosition - cardWidth;
+    
+    // Se superiamo il limite, imposta la posizione esattamente a maxTranslate
+    if (newPosition < maxTranslate) {
+      newPosition = maxTranslate;
+    }
+    
+    currentPosition = newPosition;
+    track.style.transform = `translateX(${currentPosition}px)`;
+  });
+
+  prevBtn.addEventListener('click', () => {
+    let newPosition = currentPosition + cardWidth;
+    
+    // Non permettere di andare oltre l'inizio
+    if (newPosition > 0) {
+      newPosition = 0;
+    }
+    
+    currentPosition = newPosition;
+    track.style.transform = `translateX(${currentPosition}px)`;
+  });
   </script>
   <script>
     particlesJS("particles-js", {
