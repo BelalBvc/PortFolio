@@ -513,12 +513,48 @@
         });
       });
     });
-
+let currentIndex = 0;
     const track = document.querySelector('.slider-track');
   const cards = document.querySelectorAll('.card');
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
   const sliderContainer = document.querySelector('.slider-container');
+let startX = 0;
+let endX = 0;
+const swipeThreshold = 10;
+track.addEventListener("touchstart",(e) =>{
+  startX = e.touches[0].clientX;
+});
+track.addEventListener("mousedown",(e) =>{
+  startX = e.clientX;
+});
+track.addEventListener("touchend", (e) => {
+  endX = e.changedTouches[0].clientX;
+  handleSwipe();
+});
+
+track.addEventListener("mouseup", (e) => {
+  endX = e.clientX;
+  handleSwipe();
+});
+function handleSwipe() {
+  const diff = startX - endX; // Differenza tra punto iniziale e finale
+
+  if (Math.abs(diff) > swipeThreshold) {
+    if (diff > 0 && currentIndex < cards.length - 1) {
+      // Swipe verso sinistra → Mostriamo la prossima card
+      currentIndex++;
+    } else if (diff < 0 && currentIndex > 0) {
+      // Swipe verso destra → Mostriamo la card precedente
+      currentIndex--;
+    }
+    updateSliderPosition(); // Muoviamo il track
+  }
+}
+function updateSliderPosition() {
+  const offset = -currentIndex * cardWidth; // Sposta il track alla posizione giusta
+  track.style.transform = `translateX(${offset}px)`;
+}
 
   let currentPosition = 0;
   let gap = window.innerHeight * 0.05;
