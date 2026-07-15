@@ -1,4 +1,4 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
+import { compileMDX } from 'next-mdx-remote/rsc'
 import CodeBlock from '@/components/mdx/CodeBlock'
 import Callout from '@/components/mdx/Callout'
 import { highlightCode } from './shiki'
@@ -64,7 +64,10 @@ const components = {
 
 export async function renderMdx(content: string) {
   const processed = await preprocessCodeFences(content)
-  return (
-    <MDXRemote source={processed} components={components} />
-  )
+  const { content: mdxContent } = await compileMDX({
+    source: processed,
+    components,
+    options: { parseFrontmatter: true },
+  })
+  return mdxContent
 }
