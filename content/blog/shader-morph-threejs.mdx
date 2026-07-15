@@ -1,0 +1,58 @@
+---
+title: "Shader Morphing in Three.js: A Practical Guide"
+slug: "shader-morph-threejs"
+date: "2025-06-28"
+category: "WebGL"
+cover: "https://images.unsplash.com/photo-1633354438632-67d4c3f4d3e4?w=1200&q=80"
+excerpt: "Vertex displacement with simplex noise, driven by scroll progress. A practical pattern for living 3D objects in React Three Fiber."
+---
+
+Shader morphing is the technique behind most "living" 3D objects on award-winning sites. Here's the practical pattern I use in React Three Fiber.
+
+## The Vertex Shader
+
+The core idea: displace vertices along their normals using a noise function, then modulate the amplitude with a uniform you control from JS.
+
+```glsl
+uniform float uTime;
+uniform float uScroll;
+uniform float uAmp;
+varying float vDisp;
+
+float n = snoise(position * 1.5 + uTime * 0.2);
+float disp = n * uAmp * (0.4 + uScroll * 1.6);
+vec3 transformed = position + normal * disp;
+```
+
+<Callout type="warn" title="Performance">
+  High subdivision counts (64+) are expensive. Profile on mid-tier devices before shipping.
+</Callout>
+
+## Driving the Uniform from Scroll
+
+```tsx
+useEffect(() => {
+  const st = ScrollTrigger.create({
+    trigger: '#hero',
+    start: 'top top',
+    end: 'bottom top',
+    scrub: true,
+    onUpdate: (self) => {
+      mat.current.uniforms.uScroll.value = self.progress
+    },
+  })
+  return () => st.kill()
+}, [])
+```
+
+## The Fragment Shader
+
+Fresnel adds the rim-light glow that reads as "premium 3D".
+
+```glsl
+float fres = pow(1.0 - max(dot(normalize(vNormal), vec3(0.,0.,1.)), 0.0), 2.0);
+vec3 col = mix(uColorA, uColorB, vDisp * 2.0 + 0.5);
+col += fres * 0.6;
+```
+
+That's it. A deformable, scroll-reactive 3D object in under 100 lines of shader code.

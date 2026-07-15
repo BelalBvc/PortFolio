@@ -1,0 +1,53 @@
+---
+title: "React Server Components at the Edge"
+slug: "react-server-components-edge"
+date: "2025-06-10"
+category: "Architecture"
+cover: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80"
+excerpt: "How RSC changes the mental model of data fetching, and why the edge is where they shine."
+---
+
+React Server Components blur the line between server and client. Here's how I think about them.
+
+## The Mental Model Shift
+
+With RSC, the default is server-rendered. You opt *into* client interactivity with `'use client'`, not the other way around.
+
+```tsx
+// This runs on the server — no JS shipped to client
+export default async function Page() {
+  const posts = await getPosts()
+  return <PostList posts={posts} />
+}
+```
+
+<Callout type="info">
+  Async server components can `await` directly. No `useEffect`, no loading states for the initial render.
+</Callout>
+
+## Where the Edge Fits
+
+Edge runtime gives you global low latency, but with constraints: no Node APIs, limited bundle size. RSC pairs perfectly because the heavy lifting happens at request time, close to the user.
+
+```ts
+export const runtime = 'edge'
+export const revalidate = 60 // ISR at the edge
+```
+
+## When to Use Client Components
+
+Interactivity, animations, browser APIs. The boundary should be at the leaf, not the root.
+
+```tsx
+'use client'
+import { motion } from 'framer-motion'
+export function AnimatedCard() {
+  return <motion.div animate={{ scale: 1.1 }} />
+}
+```
+
+<Callout type="tip">
+  Keep server components as the shell. Push `'use client'` as far down the tree as possible.
+</Callout>
+
+The result: fast initial loads, minimal JS, and interactivity exactly where you need it.

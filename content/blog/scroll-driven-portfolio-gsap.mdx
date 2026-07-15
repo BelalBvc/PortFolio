@@ -1,0 +1,67 @@
+---
+title: "Building a Scroll-Driven Portfolio with GSAP"
+slug: "scroll-driven-portfolio-gsap"
+date: "2025-07-15"
+category: "Animation"
+cover: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80"
+excerpt: "How I built an Awwwards-style portfolio where scroll is the narrative engine — GSAP ScrollTrigger, Lenis, and React Three Fiber."
+---
+
+When I set out to rebuild my portfolio, I didn't want another "about me / skills / contact" template. I wanted scroll to be the narrative engine. This is how I did it with GSAP ScrollTrigger, Lenis smooth scroll, and React Three Fiber.
+
+## The Foundation: Lenis + ScrollTrigger
+
+The first piece is syncing Lenis (smooth scroll) with GSAP's ScrollTrigger. Without this, animations fire on native scroll positions while the visual scroll lags behind.
+
+```ts
+import Lenis from 'lenis'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const lenis = new Lenis({ lerp: 0.1, smoothWheel: true })
+lenis.on('scroll', ScrollTrigger.update)
+gsap.ticker.add((t) => lenis.raf(t * 1000))
+gsap.ticker.lagSmoothing(0)
+```
+
+<Callout type="tip" title="Why lagSmoothing(0)?">
+  GSAP's lag smoothing can desync from Lenis on slow frames. Disabling it keeps the two loops perfectly in phase.
+</Callout>
+
+## Text Reveal with split-type
+
+The signature move: characters color from grey to neon as they enter the viewport, scrubbed to scroll progress.
+
+```tsx
+const split = new SplitType(el, { types: 'chars,words' })
+gsap.from(split.chars, {
+  yPercent: 120,
+  opacity: 0,
+  stagger: 0.02,
+  scrollTrigger: { trigger: el, start: 'top 80%', scrub: true },
+})
+```
+
+## The 3D Shader Morph
+
+A simplex-noise vertex displacement amplified by scroll progress gives the hero object its living, breathing quality.
+
+```glsl
+float n = snoise(position * 1.5 + uTime * 0.2);
+float disp = n * uAmp * (0.4 + uScroll * 1.6);
+vec3 transformed = position + normal * disp;
+```
+
+<Callout type="info">
+  The `uScroll` uniform is driven by a ScrollTrigger `onUpdate` callback, so the deformation scales with how far you've scrolled through the hero.
+</Callout>
+
+## Performance Notes
+
+- Lazy-mount the Canvas with `next/dynamic` and `ssr: false` to avoid blocking First Contentful Paint.
+- Use `gsap.matchMedia()` to disable horizontal pin scroll on mobile.
+- Gate the custom cursor behind `@media (pointer: fine)`.
+
+That's the architecture. The result is a portfolio where every scroll tells a story.

@@ -1,0 +1,64 @@
+# ─── Dependencies ───────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ─── Next.js ────────────────────────────────────
+.next/
+out/
+
+# ─── Build output ───────────────────────────────
+build/
+dist/
+export/
+
+# ─── Environment variables ─────────────────────
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ─── IDE & Editor ──────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+
+# ─── OS files ────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ─── TypeScript ──────────────────────────────────
+*.tsbuildinfo
+.next/types/
+
+# ─── Debug logs ──────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Testing ────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── Misc ──────────────────────────────────────
+*.pem
+.eslintcache
+*.tgz
+*.tgz
+
+# ─── Sentry / Telemetry ───────────────────────
+.cache/
