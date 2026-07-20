@@ -29,7 +29,7 @@ export default function ReadingProgress() {
 
   return (
     <div className="fixed left-0 top-0 z-50 h-screen w-[3px] pointer-events-none">
-      <div className="absolute inset-0 bg-white/5" />
+      <div className="absolute inset-0 bg-ink/5" />
       <div
         ref={barRef}
         className="absolute inset-0 origin-bottom"

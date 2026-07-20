@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from '@/lib/gsap'
+import SectionHeader from '@/components/SectionHeader'
 
 interface Project {
   id: string
@@ -24,8 +25,8 @@ const PROJECTS: Project[] = [
     description:
       'A real-time collaboration platform handling 10k+ concurrent users with WebSocket streaming and CRDT sync.',
     stack: ['Next.js', 'Node', 'Redis', 'WebSocket'],
-    accent: '#00FF88',
-    bg: '#0A1A0F',
+    accent: '#C6F24E',
+    bg: '#0A0F08',
     link: '#',
   },
   {
@@ -36,8 +37,8 @@ const PROJECTS: Project[] = [
     description:
       'Interactive 3D data visualization dashboard for financial analytics with WebGL rendering.',
     stack: ['React', 'Three.js', 'D3', 'Python'],
-    accent: '#00E5FF',
-    bg: '#0A151A',
+    accent: '#F4F1EA',
+    bg: '#0E0E0D',
     link: '#',
   },
   {
@@ -48,8 +49,8 @@ const PROJECTS: Project[] = [
     description:
       'Internal CI/CD orchestration tool reducing deploy times by 70% across 50+ microservices.',
     stack: ['Go', 'Docker', 'K8s', 'gRPC'],
-    accent: '#FF2D95',
-    bg: '#1A0A12',
+    accent: '#8C8A82',
+    bg: '#0D0D0D',
     link: '#',
   },
   {
@@ -60,8 +61,8 @@ const PROJECTS: Project[] = [
     description:
       'Headless e-commerce platform with edge-rendered product pages and sub-100ms TTFB worldwide.',
     stack: ['Next.js', 'Stripe', 'Postgres', 'Vercel'],
-    accent: '#B388FF',
-    bg: '#120A1A',
+    accent: '#C6F24E',
+    bg: '#0A0F08',
     link: '#',
   },
 ]
@@ -70,6 +71,7 @@ export default function Showcase() {
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const bgRef = useRef<HTMLDivElement>(null)
+  const dotsRef = useRef<HTMLDivElement>(null)
 
   useIsomorphicLayoutEffect(() => {
     if (!sectionRef.current || !trackRef.current) return
@@ -78,7 +80,6 @@ export default function Showcase() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia()
 
-      // Desktop: horizontal pin scroll
       mm.add('(min-width: 768px)', () => {
         const track = trackRef.current!
         const totalScroll = track.scrollWidth - window.innerWidth
@@ -97,11 +98,9 @@ export default function Showcase() {
           },
         })
 
-        // Per-project background color tween
         const projects = gsap.utils.toArray<HTMLElement>('.project-card')
         projects.forEach((proj) => {
           const bg = proj.dataset.bg!
-          const accent = proj.dataset.accent!
           ScrollTrigger.create({
             trigger: proj,
             containerAnimation: tween,
@@ -109,21 +108,36 @@ export default function Showcase() {
             end: 'right center',
             onEnter: () => {
               gsap.to(bgRef.current!, { backgroundColor: bg, duration: 0.8 })
-              document.documentElement.style.setProperty('--neon', accent)
             },
             onEnterBack: () => {
               gsap.to(bgRef.current!, { backgroundColor: bg, duration: 0.8 })
-              document.documentElement.style.setProperty('--neon', accent)
+            },
+          })
+        })
+
+        const dots = gsap.utils.toArray<HTMLElement>('.showcase-dot')
+        projects.forEach((proj, i) => {
+          ScrollTrigger.create({
+            trigger: proj,
+            containerAnimation: tween,
+            start: 'left center',
+            end: 'right center',
+            onEnter: () => {
+              dots.forEach((d, j) => {
+                gsap.to(d, { scale: j === i ? 1.5 : 1, backgroundColor: j === i ? PROJECTS[i].accent : 'rgba(244,241,234,0.15)', duration: 0.4 })
+              })
+            },
+            onEnterBack: () => {
+              dots.forEach((d, j) => {
+                gsap.to(d, { scale: j === i ? 1.5 : 1, backgroundColor: j === i ? PROJECTS[i].accent : 'rgba(244,241,234,0.15)', duration: 0.4 })
+              })
             },
           })
         })
       })
 
-      // Mobile: vertical stack, no pin, section auto-height
       mm.add('(max-width: 767px)', () => {
-        // Make section auto-height on mobile
         gsap.set(sectionRef.current!, { height: 'auto', minHeight: '100vh' })
-        // Release the inner container from h-full
         gsap.set('.showcase-inner', { height: 'auto', flexDirection: 'column', gap: '1.5rem' })
         gsap.set('.track-inner', { width: '100%', flexDirection: 'column', gap: '2rem' })
 
@@ -149,63 +163,55 @@ export default function Showcase() {
 
   return (
     <section
+      id="work"
       ref={sectionRef}
       className="relative w-full overflow-hidden md:h-screen"
     >
-      {/* Dynamic background */}
       <div
         ref={bgRef}
         className="absolute inset-0 z-0 transition-colors duration-700"
-        style={{ backgroundColor: '#0A0A0B' }}
+        style={{ backgroundColor: '#0B0B0C' }}
       />
 
       <div className="relative z-10 md:h-full flex items-center showcase-inner">
         <div
           ref={trackRef}
-          className="flex gap-8 px-8 md:gap-16 md:px-16 will-change-transform track-inner"
+          className="flex gap-8 px-8 md:gap-16 md:px-12 will-change-transform track-inner"
           style={{ width: 'max-content' }}
         >
-          {/* Intro panel */}
           <div className="flex-shrink-0 w-full md:w-screen md:h-full flex flex-col justify-center px-4 py-12 md:py-0">
-            <p className="font-mono text-xs tracking-widest2 uppercase text-muted mb-4">
-              // selected work
-            </p>
-            <h2 className="font-display font-bold tracking-tightest text-section leading-[0.9]">
-              SHOW
-              <br />
-              <span className="gradient-text">CASE</span>
-            </h2>
-            <p className="font-mono text-sm text-muted mt-6 max-w-sm">
-              Scroll to explore projects horizontally. The world shifts color
-              with each one.
-            </p>
+            <SectionHeader
+              index="§04"
+              label="Work"
+              title="Showcase"
+              subtitle="Selected projects. Scroll horizontally to explore. The world shifts with each one."
+            />
           </div>
 
-          {/* Project cards */}
           {PROJECTS.map((p) => (
             <div
               key={p.id}
               data-bg={p.bg}
-              data-accent={p.accent}
               className="project-card flex-shrink-0 w-full md:w-[60vw] h-auto md:h-[70vh] flex flex-col justify-between p-8 md:p-12 glass rounded-2xl"
+              style={{ '--accent': p.accent } as React.CSSProperties}
             >
               <div>
                 <div className="flex items-baseline justify-between mb-6">
                   <span className="font-mono text-sm" style={{ color: p.accent }}>
                     {p.id}
                   </span>
-                  <span className="font-mono text-xs text-muted">{p.year}</span>
+                  <span className="font-mono text-[10px] tracking-widest text-muted">{p.year}</span>
                 </div>
                 <h3
-                  className="font-display font-bold tracking-tightest text-[clamp(3rem,8vw,8rem)] leading-[0.85] mb-4"
+                  className="font-display italic font-bold tracking-tightest text-[clamp(3rem,8vw,8rem)] leading-[0.82] mb-4"
                   style={{ color: p.accent }}
                 >
                   {p.title}
                 </h3>
-                <p className="font-mono text-xs tracking-widest2 uppercase text-muted mb-6">
+                <p className="font-mono text-[10px] tracking-widest2 uppercase text-muted mb-6">
                   {p.category}
                 </p>
-                <p className="font-display text-lg text-text/80 max-w-md leading-relaxed">
+                <p className="font-body text-base text-ink/70 max-w-md leading-relaxed">
                   {p.description}
                 </p>
               </div>
@@ -215,9 +221,9 @@ export default function Showcase() {
                   {p.stack.map((s) => (
                     <span
                       key={s}
-                      className="font-mono text-xs px-3 py-1 rounded-full border"
+                      className="font-mono text-[10px] px-3 py-1 rounded-full border"
                       style={{
-                        borderColor: `${p.accent}40`,
+                        borderColor: `${p.accent}30`,
                         color: p.accent,
                       }}
                     >
@@ -228,7 +234,7 @@ export default function Showcase() {
                 <a
                   href={p.link}
                   data-cursor="hover"
-                  className="font-mono text-sm inline-flex items-center gap-2 hover:gap-4 transition-all"
+                  className="font-mono text-xs inline-flex items-center gap-2 hover:gap-4 transition-all"
                   style={{ color: p.accent }}
                 >
                   view project →
@@ -237,24 +243,23 @@ export default function Showcase() {
             </div>
           ))}
 
-          {/* Outro panel */}
-          <div className="flex-shrink-0 w-full md:w-screen md:h-full flex flex-col justify-center px-4 py-12 md:py-0 text-center">
-            <p className="font-mono text-xs tracking-widest2 uppercase text-muted mb-4">
-              // end of showcase
+          <div className="flex-shrink-0 w-full md:w-screen md:h-full flex flex-col justify-center px-4 py-12 md:py-0 items-center text-center">
+            <p className="font-mono text-[10px] tracking-widest2 uppercase text-muted mb-4">
+              § end of showcase
             </p>
-            <p className="font-display text-sub text-text/70">
+            <p className="font-display italic text-2xl text-ink/60">
               More on GitHub →
             </p>
           </div>
         </div>
       </div>
 
-      {/* Progress dots (desktop) */}
-      <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 gap-2">
-        {PROJECTS.map((p) => (
+      <div ref={dotsRef} className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 gap-2">
+        {PROJECTS.map((p, i) => (
           <span
             key={p.id}
-            className="w-2 h-2 rounded-full bg-white/20"
+            className="showcase-dot w-2 h-2 rounded-full"
+            style={{ backgroundColor: 'rgba(244,241,234,0.15)', transition: 'background-color 0.4s ease, transform 0.4s ease' }}
           />
         ))}
       </div>

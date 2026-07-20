@@ -22,7 +22,7 @@ export default function TextReveal({
   scrub = 1.5,
   start = 'top 80%',
   end = 'top 30%',
-  colorTo = 'var(--neon)',
+  colorTo = 'var(--accent)',
 }: TextRevealProps) {
   const ref = useRef<HTMLElement>(null)
 

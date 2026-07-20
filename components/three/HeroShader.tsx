@@ -1,7 +1,7 @@
 'use client'
 
-import { Canvas, useFrame } from '@react-three/fiber'
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useMemo, useEffect, useState } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { ScrollTrigger } from '@/lib/gsap'
 
@@ -41,7 +41,7 @@ const vertex = /* glsl */ `
   void main(){
     vNormal = normal;
     float n = snoise(position * 1.5 + uTime * 0.2);
-    float disp = n * uAmp * (0.4 + uScroll * 1.6);
+    float disp = n * uAmp * (0.4 + uScroll * 1.8);
     vDisp = disp;
     vec3 transformed = position + normal * disp;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
@@ -55,12 +55,76 @@ const fragment = /* glsl */ `
   varying vec3 vNormal;
   varying float vDisp;
   void main(){
-    float fres = pow(1.0 - max(dot(normalize(vNormal), vec3(0.,0.,1.)), 0.0), 2.0);
-    vec3 col = mix(uColorA, uColorB, vDisp * 2.0 + 0.5);
-    col += fres * 0.6;
+    float fres = pow(1.0 - max(dot(normalize(vNormal), vec3(0.,0.,1.)), 0.0), 3.0);
+    vec3 col = mix(uColorA, uColorB, vDisp * 2.5 + 0.5);
+    col += fres * 0.5;
     gl_FragColor = vec4(col, 1.0);
   }
 `
+
+function ParticleField() {
+  const pointsRef = useRef<THREE.Points>(null!)
+
+  const { positions, count } = useMemo(() => {
+    const count = 300
+    const positions = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 10
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 8
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 4
+    }
+    return { positions, count }
+  }, [])
+
+  useFrame(({ clock }) => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y = clock.elapsedTime * 0.03
+      pointsRef.current.rotation.x = Math.sin(clock.elapsedTime * 0.15) * 0.1
+    }
+  })
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.015}
+        color="#C6F24E"
+        transparent
+        opacity={0.6}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  )
+}
+
+function CameraController() {
+  const { camera } = useThree()
+  const target = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      target.current.x = (e.clientX / window.innerWidth - 0.5) * 0.3
+      target.current.y = -(e.clientY / window.innerHeight - 0.5) * 0.2
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+
+  useFrame(() => {
+    camera.position.x += (target.current.x - camera.position.x) * 0.02
+    camera.position.y += (target.current.y - camera.position.y) * 0.02
+  })
+
+  return null
+}
 
 function DeformableKnot() {
   const mat = useRef<THREE.ShaderMaterial>(null!)
@@ -69,17 +133,17 @@ function DeformableKnot() {
     () => ({
       uTime: { value: 0 },
       uScroll: { value: 0 },
-      uAmp: { value: 0.15 },
-      uColorA: { value: new THREE.Color('#00E5FF') },
-      uColorB: { value: new THREE.Color('#FF2D95') },
+      uAmp: { value: 0.18 },
+      uColorA: { value: new THREE.Color('#0B0B0C') },
+      uColorB: { value: new THREE.Color('#C6F24E') },
     }),
     []
   )
 
   useFrame(({ clock }) => {
     mat.current.uniforms.uTime.value = clock.elapsedTime
-    mesh.current.rotation.y = clock.elapsedTime * 0.1
-    mesh.current.rotation.x = clock.elapsedTime * 0.05
+    mesh.current.rotation.y = clock.elapsedTime * 0.08
+    mesh.current.rotation.x = clock.elapsedTime * 0.03
   })
 
   useEffect(() => {
@@ -97,27 +161,58 @@ function DeformableKnot() {
 
   return (
     <mesh ref={mesh}>
-      <icosahedronGeometry args={[1.4, 64]} />
+      <icosahedronGeometry args={[1.5, 64]} />
       <shaderMaterial
         ref={mat}
         uniforms={uniforms}
         vertexShader={vertex}
         fragmentShader={fragment}
+        transparent
       />
     </mesh>
   )
 }
 
-export default function Scene3D() {
+function ReducedMotionNotice() {
+  return (
+    <mesh>
+      <icosahedronGeometry args={[1.2, 3]} />
+      <meshBasicMaterial color="#C6F24E" wireframe transparent opacity={0.15} />
+    </mesh>
+  )
+}
+
+function Scene3D() {
+  const [reduced, setReduced] = useState(false)
+
+  useEffect(() => {
+    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
+
   return (
     <Canvas
-      camera={{ position: [0, 0, 4], fov: 45 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0, 3.5], fov: 50 }}
+      dpr={[1, 1.5]}
+      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ background: 'transparent' }}
+      frameloop={reduced ? 'demand' : 'always'}
     >
-      <ambientLight intensity={0.5} />
-      <DeformableKnot />
+      {reduced ? (
+        <ReducedMotionNotice />
+      ) : (
+        <>
+          <ambientLight intensity={0.4} />
+          <pointLight position={[2, 1, 2]} intensity={0.8} color="#C6F24E" />
+          <pointLight position={[-2, -1, -1]} intensity={0.3} color="#F4F1EA" />
+          <DeformableKnot />
+          <ParticleField />
+          <CameraController />
+        </>
+      )}
     </Canvas>
   )
+}
+
+export default function Hero3D() {
+  return <Scene3D />
 }

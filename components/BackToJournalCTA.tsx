@@ -1,16 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import MagneticButton from './MagneticButton'
 
 export default function BackToJournalCTA() {
   return (
     <Link href="/#journal">
-      <MagneticButton strength={0.4} className="mb-8">
-        <span className="font-display font-bold tracking-tightest text-2xl gradient-text">
-          READ MORE →
-        </span>
-      </MagneticButton>
+      <button
+        data-cursor="hover"
+        className="font-display italic font-bold text-2xl text-accent hover:text-ink transition-colors duration-300 mb-8"
+      >
+        READ MORE →
+      </button>
     </Link>
   )
 }

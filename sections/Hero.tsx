@@ -3,68 +3,48 @@
 import { useRef } from 'react'
 import { gsap, ScrollTrigger, useIsomorphicLayoutEffect } from '@/lib/gsap'
 import Scene3DLazy from '@/components/three/Scene3DLazy'
+import Marquee from '@/components/Marquee'
+import Nav from '@/components/Nav'
 
-const CODE_SNIPPET = `const bilal = {
-  role: 'Full Stack Developer',
-  stack: ['React', 'Node', 'AWS'],
-  passion: 'clean code + clean UI',
-  ship: () => '🚀 to production',
-}
-
-// the cursor reveals what's
-// underneath the surface.
-// move your mouse →`
+const STACK_MARQUEE = [
+  'React', 'Next.js', 'TypeScript', 'Node.js', 'PostgreSQL',
+  'Redis', 'AWS', 'Docker', 'Three.js', 'GSAP', 'WebGL', 'Terraform',
+]
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const codeRef = useRef<HTMLDivElement>(null)
-  const maskRef = useRef<HTMLDivElement>(null)
+  const nameRef = useRef<HTMLHeadingElement>(null)
+  const roleRef = useRef<HTMLParagraphElement>(null)
 
   useIsomorphicLayoutEffect(() => {
     if (!sectionRef.current) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const ctx = gsap.context(() => {
-      // Title split + clip-path dissolve on scroll
-      gsap.to(titleRef.current, {
-        yPercent: -30,
-        opacity: 0,
-        filter: 'blur(20px)',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current!,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-        },
-      })
-
-      // Code layer parallax (slower)
-      gsap.to(codeRef.current, {
+      gsap.to(nameRef.current, {
         yPercent: -15,
+        opacity: 0,
+        filter: 'blur(16px)',
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current!,
           start: 'top top',
           end: 'bottom top',
-          scrub: 1.5,
+          scrub: 1.2,
         },
       })
 
-      // Mask reveal follows mouse
-      const section = sectionRef.current!
-      const onMove = (e: MouseEvent) => {
-        const rect = section.getBoundingClientRect()
-        const x = e.clientX - rect.left
-        const y = e.clientY - rect.top
-        if (maskRef.current) {
-          maskRef.current.style.setProperty('--mx', `${x}px`)
-          maskRef.current.style.setProperty('--my', `${y}px`)
-        }
-      }
-      section.addEventListener('mousemove', onMove)
-      return () => section.removeEventListener('mousemove', onMove)
+      gsap.to(roleRef.current, {
+        yPercent: -10,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current!,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2,
+        },
+      })
     }, sectionRef)
 
     return () => ctx.revert()
@@ -76,49 +56,37 @@ export default function Hero() {
       ref={sectionRef}
       className="relative h-screen w-full overflow-hidden flex items-center justify-center"
     >
-      {/* 3D background */}
-      <div className="absolute inset-0 z-0 opacity-60">
+      <Nav />
+
+      <div className="absolute inset-0 z-0">
         <Scene3DLazy />
+        <div className="absolute inset-0 bg-gradient-to-b from-bg/40 via-transparent to-bg/80" />
       </div>
 
-      {/* Hidden code layer revealed by cursor mask */}
-      <div
-        ref={codeRef}
-        className="code-layer absolute inset-0 z-10 flex items-center justify-center pointer-events-none select-none"
-      >
-        <pre className="text-center opacity-30">{CODE_SNIPPET}</pre>
-      </div>
+      <div className="relative z-10 text-center px-4 w-full">
+        <div className="mb-4">
+          <span className="font-mono text-[10px] tracking-widest2 text-accent">§00</span>
+        </div>
 
-      {/* Cursor mask layer — reveals code underneath */}
-      <div
-        ref={maskRef}
-        className="absolute inset-0 z-20 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle 180px at var(--mx, 50%) var(--my, 50%), transparent 0%, var(--bg) 100%)',
-        }}
-      />
-
-      {/* Main UI layer */}
-      <div className="relative z-30 text-center px-4">
-        <p className="font-mono text-xs tracking-widest2 uppercase text-muted mb-4">
-          // scroll to explore
-        </p>
         <h1
-          ref={titleRef}
-          className="font-display font-bold tracking-tightest leading-[0.85] text-[clamp(4rem,2rem+16vw,18vw)]"
+          ref={nameRef}
+          className="font-display italic font-bold tracking-tightest leading-[0.82] text-[clamp(3.5rem,2rem+16vw,18vw)] text-ink mb-2"
         >
-          <span className="block">FULL STACK</span>
-          <span className="block gradient-text">DEVELOPER</span>
+          Bilal
+          <br />
+          Nazih
         </h1>
-        <p className="font-mono text-sm text-muted mt-6 max-w-md mx-auto">
-          Bilal Nazih — engineer who designs, designer who ships.
+
+        <p
+          ref={roleRef}
+          className="font-mono text-[clamp(0.75rem,1.5vw,1rem)] tracking-widest2 uppercase text-muted"
+        >
+          Full Stack Developer
         </p>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 font-mono text-xs text-muted animate-pulse">
-        ↓ scroll
+      <div className="absolute bottom-8 left-0 right-0 z-10">
+        <Marquee items={STACK_MARQUEE} speed={40} />
       </div>
     </section>
   )

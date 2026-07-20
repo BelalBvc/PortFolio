@@ -24,20 +24,19 @@ export default function CodeBlock({
   }
 
   const langColor: Record<string, string> = {
-    ts: '#00E5FF',
-    tsx: '#00E5FF',
-    js: '#FF2D95',
-    jsx: '#FF2D95',
-    css: '#00FF88',
-    bash: '#B388FF',
-    json: '#FFB347',
+    ts: '#C6F24E',
+    tsx: '#C6F24E',
+    js: '#F4F1EA',
+    jsx: '#F4F1EA',
+    css: '#C6F24E',
+    bash: '#8C8A82',
+    json: '#C6F24E',
   }
-  const color = langColor[lang] ?? '#8A8A93'
+  const color = langColor[lang] ?? '#8C8A82'
 
   return (
-    <div className="my-8 rounded-xl overflow-hidden border border-white/8 bg-surface">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/8 bg-surface-2">
+    <div className="my-8 rounded-xl overflow-hidden border border-line bg-surface">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-line bg-surface-2">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
@@ -54,10 +53,10 @@ export default function CodeBlock({
         <button
           onClick={handleCopy}
           data-cursor="hover"
-          className="font-mono text-xs px-3 py-1 rounded-md border border-white/10 text-muted hover:text-neon hover:border-neon/40 transition-all"
+          className="font-mono text-xs px-3 py-1 rounded-md border border-line text-muted hover:text-accent hover:border-accent/40 transition-all"
           style={
             copied
-              ? { color: 'var(--neon)', borderColor: 'var(--neon)', boxShadow: '0 0 12px var(--neon)' }
+              ? { color: 'var(--accent)', borderColor: 'var(--accent)', boxShadow: '0 0 12px var(--accent)' }
               : undefined
           }
         >
@@ -73,7 +72,7 @@ export default function CodeBlock({
             dangerouslySetInnerHTML={{ __html: highlightedHtml }}
           />
         ) : (
-          <pre className="font-mono leading-relaxed text-text/90 whitespace-pre">
+          <pre className="font-mono leading-relaxed text-ink/90 whitespace-pre">
             <code>{code}</code>
           </pre>
         )}

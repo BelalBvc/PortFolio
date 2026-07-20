@@ -44,66 +44,61 @@ export default async function ArticlePage({
       <ReadingProgress />
 
       <article className="relative min-h-screen w-full pt-32 pb-24">
-        {/* Header */}
         <header className="max-w-[720px] mx-auto px-6 mb-16">
           <Link
             href="/#journal"
             data-cursor="hover"
-            className="font-mono text-xs text-muted hover:text-neon transition-colors inline-flex items-center gap-2 mb-8"
+            className="font-mono text-xs text-muted hover:text-accent transition-colors inline-flex items-center gap-2 mb-8"
           >
             ← back to journal
           </Link>
 
           <div className="flex items-center gap-3 mb-6 font-mono text-xs">
-            <span className="text-neon-2">{post.category}</span>
+            <span className="text-accent">{post.category}</span>
             <span className="text-muted">·</span>
             <span className="text-muted">{formattedDate}</span>
             <span className="text-muted">·</span>
             <span className="text-muted">{post.readingTime}</span>
           </div>
 
-          <h1 className="font-display font-bold tracking-tightest text-[clamp(2rem,6vw,4rem)] leading-[0.95] mb-6">
+          <h1 className="font-display italic font-bold tracking-tightest text-[clamp(2rem,6vw,4rem)] leading-[0.95] mb-6 text-ink">
             {post.title}
           </h1>
 
-          <p className="font-display text-lg text-text/70 leading-relaxed">
+          <p className="font-body text-lg text-ink/60 leading-relaxed">
             {post.excerpt}
           </p>
         </header>
 
-        {/* Cover */}
         {post.cover && (
           <div className="max-w-[1000px] mx-auto px-6 mb-16">
-            <div className="rounded-2xl overflow-hidden border border-white/8 aspect-[16/9]">
+            <div className="rounded-2xl overflow-hidden border border-line aspect-[16/9]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.cover}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover grayscale"
               />
             </div>
           </div>
         )}
 
-        {/* Body */}
         <div className="max-w-[720px] mx-auto px-6">
-          {/* Drop cap on first paragraph via wrapper */}
-          <div className="mdx-content [&>p:first-child]:text-[1.15rem] [&>p:first-child:first-letter]:text-[3.5rem] [&>p:first-child:first-letter]:font-display [&>p:first-child:first-letter]:font-bold [&>p:first-child:first-letter]:float-left [&>p:first-child:first-letter]:mr-2 [&>p:first-child:first-letter]:leading-[0.8] [&>p:first-child:first-letter]:text-neon">
+          <div className="mdx-content [&>p:first-child]:text-[1.15rem] [&>p:first-child:first-letter]:text-[3.5rem] [&>p:first-child:first-letter]:font-display [&>p:first-child:first-letter]:italic [&>p:first-child:first-letter]:font-bold [&>p:first-child:first-letter]:float-left [&>p:first-child:first-letter]:mr-2 [&>p:first-child:first-letter]:leading-[0.8] [&>p:first-child:first-letter]:text-accent">
             {mdx}
           </div>
         </div>
 
-        {/* Footer CTA */}
-        <footer className="max-w-[720px] mx-auto px-6 mt-24 pt-12 border-t border-white/10 text-center">
+        <footer className="max-w-[720px] mx-auto px-6 mt-24 pt-12 border-t border-line text-center">
           <p className="font-mono text-xs tracking-widest2 uppercase text-muted mb-6">
-            // end of article
+            § end of article
           </p>
           <BackToJournalCTA />
           <div>
             <Link
               href="/"
               data-cursor="hover"
-              className="font-mono text-sm text-muted hover:text-neon transition-colors"
+              className="font-mono text-sm text-muted hover:text-accent transition-colors"
             >
               ← back home
             </Link>

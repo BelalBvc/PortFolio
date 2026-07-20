@@ -11,41 +11,36 @@ export default function CustomCursor() {
     if (window.matchMedia('(pointer: coarse)').matches) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    document.documentElement.classList.add('has-custom-cursor')
+
     const dot = dotRef.current!
     const ring = ringRef.current!
-    const xToDot = gsap.quickTo(dot, 'x', { duration: 0.15, ease: 'power3' })
-    const yToDot = gsap.quickTo(dot, 'y', { duration: 0.15, ease: 'power3' })
-    const xToRing = gsap.quickTo(ring, 'x', { duration: 0.4, ease: 'power3' })
-    const yToRing = gsap.quickTo(ring, 'y', { duration: 0.4, ease: 'power3' })
+
+    const xToDot = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' })
+    const yToDot = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' })
+    const xToRing = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' })
+    const yToRing = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' })
 
     const onMove = (e: MouseEvent) => {
       xToDot(e.clientX)
       yToDot(e.clientY)
       xToRing(e.clientX)
       yToRing(e.clientY)
-    }
 
-    const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (target.closest('[data-cursor="hover"], a, button')) {
+      const isHoverTarget = target.closest('[data-cursor="hover"], a, button')
+      if (isHoverTarget) {
         ring.classList.add('hovering')
-      }
-    }
-    const onOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (target.closest('[data-cursor="hover"], a, button')) {
+      } else {
         ring.classList.remove('hovering')
       }
     }
 
-    window.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseover', onOver)
-    document.addEventListener('mouseout', onOut)
+    window.addEventListener('pointermove', onMove as EventListener)
 
     return () => {
-      window.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseover', onOver)
-      document.removeEventListener('mouseout', onOut)
+      document.documentElement.classList.remove('has-custom-cursor')
+      window.removeEventListener('pointermove', onMove as EventListener)
     }
   }, [])
 

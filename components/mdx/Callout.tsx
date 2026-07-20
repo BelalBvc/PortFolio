@@ -5,9 +5,9 @@ interface CalloutProps {
 }
 
 const STYLES = {
-  info: { border: '#00E5FF', bg: 'rgba(0,229,255,0.06)', label: 'INFO' },
-  warn: { border: '#FF2D95', bg: 'rgba(255,45,149,0.06)', label: 'WARNING' },
-  tip: { border: '#00FF88', bg: 'rgba(0,255,136,0.06)', label: 'TIP' },
+  info: { border: '#C6F24E', bg: 'rgba(198,242,78,0.05)', label: 'INFO' },
+  warn: { border: '#F4F1EA', bg: 'rgba(244,241,234,0.05)', label: 'WARNING' },
+  tip: { border: '#8C8A82', bg: 'rgba(140,138,130,0.06)', label: 'TIP' },
 }
 
 export default function Callout({
@@ -22,12 +22,12 @@ export default function Callout({
       style={{ borderColor: s.border, background: s.bg }}
     >
       <div
-        className="font-mono text-xs tracking-widest uppercase mb-2"
+        className="font-mono text-[10px] tracking-widest2 uppercase mb-2"
         style={{ color: s.border }}
       >
         {title ?? s.label}
       </div>
-      <div className="text-text/85 leading-relaxed">{children}</div>
+      <div className="text-ink/75 leading-relaxed">{children}</div>
     </div>
   )
 }
